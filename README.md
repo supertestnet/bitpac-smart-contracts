@@ -1,2 +1,2 @@
-# bitpac-smart-contracts
+# Bitpac smart contracts
 smart contracts I have personally evaluated and found safe
