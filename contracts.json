@@ -7,7 +7,7 @@
     "flds": {
       "longer": "32 byte bitcoin pubkey",
       "shorter": "32 byte bitcoin pubkey",
-      "target_price": "integer",
+      "target_price": "integer"
     }
   }
 }
