@@ -295,6 +295,12 @@
                 $( '.toast' ).classList.add( "show" );
                 setTimeout( () => $( '.toast' ).classList.remove( "show" ), 3000 );
             }
+            function textToHex( text ) {
+                var encoder = new TextEncoder().encode( text );
+                return [...new Uint8Array(encoder)]
+                    .map( x => x.toString( 16 ).padStart( 2, "0" ) )
+                    .join( "" );
+            }
         </script>
     </head>
     <body>
@@ -319,14 +325,15 @@
         <script>
             var contracts;
             ( async () => {
-                var contract_codes = await getData( `https://supertestnet.github.io/bitpac-smart-contracts/contracts.json` );
+                var src = `https://supertestnet.github.io/bitpac-smart-contracts/contracts.json`;
+                var contract_codes = await getData( src );
                 contract_codes = JSON.parse( contract_codes );
                 contracts = contract_codes;
                 Object.keys( contract_codes ).forEach( item => {
                     var contract = document.createElement( "div" );
                     contract.classList.add( "contract_btn" );
                     contract.setAttribute( "draggable", true );
-                    contract.setAttribute( "data-id", item );
+                    contract.setAttribute( "data-id", `${textToHex( src )}:${item}` );
                     var title = contract_codes[ item ][ "name" ];
                     var first_letter = title.charAt( 0 ).toUpperCase();
                     var rest = title.substring( 1 );
@@ -337,7 +344,7 @@
                     div.style.display = "inline-block";
                     div.appendChild( contract );
                     var contract_buttons = document.createElement( "div" );
-                    contract_buttons.innerHTML = `<button class="contract_buttons copy_id" data-id="${item}">Copy ID</button><br><button class="contract_buttons view_code" data-id="${item}">View code</button>`;
+                    contract_buttons.innerHTML = `<button class="contract_buttons copy_id" data-id="${textToHex( src )}:${item}">Copy ID</button><br><button class="contract_buttons view_code" data-id="${textToHex( src )}:${item}">View code</button>`;
                     div.append( contract_buttons );
                     div.getElementsByClassName( "copy_id" )[ 0 ].onclick = e => {
                         var id = e.target.getAttribute( 'data-id' );
@@ -345,9 +352,10 @@
                         showToast( 'copied' );
                     }
                     div.getElementsByClassName( "view_code" )[ 0 ].onclick = e => {
-                        var code = js_beautify( contracts[ e.target.getAttribute( 'data-id' ) ][ 'code' ] );
-                        var title = contracts[ e.target.getAttribute( 'data-id' ) ][ 'name' ];
-                        var desc = contracts[ e.target.getAttribute( 'data-id' ) ][ 'desc' ];
+                        var id = e.target.getAttribute( 'data-id' ).split( ":" )[ 1 ];
+                        var code = js_beautify( contracts[ id ][ 'code' ] );
+                        var title = contracts[ id ][ 'name' ];
+                        var desc = contracts[ id ][ 'desc' ];
                         var first_letter = title.charAt( 0 ).toUpperCase();
                         var rest = title.substring( 1 );
                         title = first_letter + rest;
