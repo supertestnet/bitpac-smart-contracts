@@ -1,2 +1,2 @@
 # Bitpac smart contracts
-smart contracts I have personally evaluated and found safe
+Smart contracts I have personally evaluated and found safe
